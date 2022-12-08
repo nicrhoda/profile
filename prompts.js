@@ -9,6 +9,7 @@ const Manager = require('./develop/lib/manager');
 const Engineer = require('./develop/lib/engineer');
 const Intern = require('./develop/lib/intern');
 const { setEnvironmentData } = require('worker_threads');
+const buildStaff = require('./develop/lib/html');
 const staff = [];
 
 //display intial prompts
@@ -54,7 +55,6 @@ function prompts(position) {
         ])
         .then((answers) => {
             const manager = new Manager(answers.name, answers.email, answers.id, answers.officeNumber);
-            console.log(manager);
             staff.push(manager);
             askAgain();
         })
@@ -77,11 +77,15 @@ function prompts(position) {
             },
             {
                 type: 'input',
-                name: 'specialAnswer',
+                name: 'github',
                 message: 'Enter GitHub:',
             }
         ])
-        
+        .then((answers) => {
+            const engineer = new Engineer(answers.name, answers.email, answers.id, answers.github);
+            staff.push(engineer);
+            askAgain();
+        })
     } else if(position === 'Intern'){
         inquirer.prompt([
             {
@@ -101,10 +105,15 @@ function prompts(position) {
             },
             {
                 type: 'input',
-                name: 'specialAnswer',
+                name: 'school',
                 message: 'Enter school:',
             }
         ])
+        .then((answers) => {
+            const intern = new Intern(answers.name, answers.email, answers.id, answers.school);
+            staff.push(intern);
+            askAgain();
+        })
     }   
 }
 function askAgain () {
@@ -117,7 +126,7 @@ function askAgain () {
         }
     ])
     .then((response) => {
-        if(response === 'yes') {
+        if(response.confirm === 'yes') {
             positionPrompt();
         } else {
             console.log(staff);

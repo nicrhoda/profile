@@ -10,6 +10,7 @@ const Engineer = require('./develop/lib/engineer');
 const Intern = require('./develop/lib/intern');
 const { setEnvironmentData } = require('worker_threads');
 const buildStaff = require('./develop/lib/html');
+const { stringify } = require('querystring');
 const staff = [];
 
 //display intial prompts
@@ -129,10 +130,17 @@ function askAgain () {
         if(response.confirm === 'yes') {
             positionPrompt();
         } else {
-            console.log(staff);
+            const memberData = buildStaff(staff);
+            const newData = stringify(memberData);
+            createHtml(newData);
         }
     })
 }
 positionPrompt();
 
 
+const createHtml = newData => {
+    fs.writeFile('./develop/html/index.html', newData, (err) => {
+        err ? console.error(err) : console.log('success');
+    })
+}
